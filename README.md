@@ -1,2 +1,2 @@
-[🌐 View Project Page](index.html)
+[🌐 View Project Page](https://rshasikiran.github.io/NetRecon/)
  

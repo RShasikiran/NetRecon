@@ -1,0 +1,1184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NetRecon — Advanced Network Reconnaissance Tool</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:     #020810;
+    --bg2:    #060f1e;
+    --bg3:    #0a1628;
+    --cyan:   #00d4ff;
+    --blue:   #0080ff;
+    --green:  #00ff88;
+    --red:    #ff3366;
+    --orange: #ff6b00;
+    --yellow: #ffd700;
+    --text:   #c8e8ff;
+    --muted:  #3a6a8a;
+    --border: #0f2a4a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ── Animated grid background ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,212,255,.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,212,255,.03) 1px, transparent 1px);
+    background-size: 48px 48px;
+    animation: gridMove 20s linear infinite;
+    pointer-events: none;
+    z-index: 0;
+  }
+  @keyframes gridMove { to { background-position: 48px 48px; } }
+
+  /* ── Glow orbs ── */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+    animation: orbFloat 8s ease-in-out infinite;
+  }
+  .orb1 { width:500px; height:500px; background:rgba(0,212,255,.06); top:-100px; left:-100px; }
+  .orb2 { width:400px; height:400px; background:rgba(0,128,255,.05); bottom:100px; right:-100px; animation-delay:-4s; }
+  @keyframes orbFloat { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
+
+  /* ── Hero ── */
+  .hero {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    padding: 80px 24px 60px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .scan-line {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    animation: scanDown 4s linear infinite;
+  }
+  @keyframes scanDown { 0%{top:0;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:100%;opacity:0} }
+
+  .eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--cyan);
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    opacity: .8;
+  }
+
+  .logo-ascii {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(7px, 1.4vw, 13px);
+    line-height: 1.3;
+    color: var(--cyan);
+    text-shadow: 0 0 20px rgba(0,212,255,.4);
+    margin-bottom: 32px;
+    display: inline-block;
+  }
+
+  .hero-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(36px, 7vw, 72px);
+    font-weight: 900;
+    letter-spacing: .06em;
+    line-height: 1;
+    margin-bottom: 16px;
+    background: linear-gradient(135deg, #ffffff 0%, var(--cyan) 50%, var(--blue) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: 16px;
+    color: #4a8aaa;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+  }
+
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+    margin-bottom: 48px;
+  }
+
+  .badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 3px;
+    letter-spacing: .1em;
+    border: 1px solid;
+    transition: all .2s;
+  }
+  .badge:hover { transform: translateY(-2px); }
+  .badge-cyan  { color:var(--cyan);   border-color:rgba(0,212,255,.3);  background:rgba(0,212,255,.05); }
+  .badge-blue  { color:#7ab4ff;       border-color:rgba(0,128,255,.3);  background:rgba(0,128,255,.05); }
+  .badge-green { color:var(--green);  border-color:rgba(0,255,136,.3);  background:rgba(0,255,136,.05); }
+  .badge-red   { color:#ff8080;       border-color:rgba(255,51,102,.3); background:rgba(255,51,102,.05); }
+  .badge-orange{ color:var(--orange); border-color:rgba(255,107,0,.3);  background:rgba(255,107,0,.05); }
+
+  .hero-tagline {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 13px;
+    color: var(--cyan);
+    letter-spacing: .15em;
+    border: 1px solid rgba(0,212,255,.2);
+    display: inline-block;
+    padding: 12px 32px;
+    border-radius: 2px;
+    background: rgba(0,212,255,.03);
+  }
+
+  /* ── Sections ── */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 1; }
+
+  section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+
+  .sec-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    letter-spacing: .25em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    opacity: .7;
+  }
+
+  .sec-title {
+    font-family: 'Orbitron', sans-serif;
+    font-size: clamp(20px, 3vw, 28px);
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 40px;
+    letter-spacing: .04em;
+  }
+
+  /* ── Comparison ── */
+  .compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .compare-col {
+    padding: 24px;
+    background: var(--bg2);
+  }
+  .compare-col.good { background: rgba(0,255,136,.03); border-left: 3px solid var(--green); }
+  .compare-col.bad  { background: rgba(255,51,102,.03); border-left: 3px solid var(--red); }
+  .compare-head {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .15em;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .compare-head.g { color: var(--green); }
+  .compare-head.r { color: var(--red); }
+  .compare-item {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid rgba(255,255,255,.04);
+    color: #8ab8cc;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .compare-item:last-child { border-bottom: none; }
+  .compare-item span { opacity: .4; flex-shrink: 0; }
+
+  /* ── Pipeline ── */
+  .pipeline {
+    display: flex;
+    gap: 0;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 8px;
+  }
+  .pipe-step {
+    flex: 1;
+    min-width: 130px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-right: none;
+    padding: 20px 16px;
+    position: relative;
+    transition: background .2s;
+  }
+  .pipe-step:last-child { border-right: 1px solid var(--border); border-radius: 0 4px 4px 0; }
+  .pipe-step:first-child { border-radius: 4px 0 0 4px; }
+  .pipe-step:hover { background: var(--bg3); }
+  .pipe-step::after {
+    content: '▶';
+    position: absolute;
+    right: -11px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--cyan);
+    font-size: 11px;
+    z-index: 2;
+    background: var(--bg);
+    padding: 2px 0;
+  }
+  .pipe-step:last-child::after { display: none; }
+  .pipe-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--cyan);
+    margin-bottom: 6px;
+    opacity: .6;
+  }
+  .pipe-name {
+    font-size: 12px;
+    font-weight: 500;
+    color: #fff;
+    margin-bottom: 4px;
+  }
+  .pipe-desc {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.5;
+  }
+
+  /* ── Feature grid ── */
+  .feat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  .feat-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 20px;
+    transition: border-color .2s, transform .2s;
+    cursor: default;
+  }
+  .feat-card:hover { border-color: rgba(0,212,255,.3); transform: translateY(-3px); }
+  .feat-icon {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 12px;
+    font-size: 16px;
+  }
+  .feat-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--cyan);
+    margin-bottom: 6px;
+    letter-spacing: .04em;
+  }
+  .feat-desc { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  /* ── Risk meter ── */
+  .risk-grid {
+    display: grid;
+    grid-template-columns: repeat(4,1fr);
+    gap: 12px;
+  }
+  .risk-card {
+    padding: 20px 16px;
+    border-radius: 4px;
+    border: 1px solid;
+    text-align: center;
+  }
+  .risk-score {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .risk-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: .12em;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .risk-bar { height: 4px; border-radius: 2px; margin-top: 8px; }
+  .rc { color:#e74c3c; border-color:rgba(231,76,60,.3); background:rgba(231,76,60,.05); }
+  .rc .risk-bar { background:#e74c3c; width:100%; }
+  .rh { color:#e67e22; border-color:rgba(230,126,34,.3); background:rgba(230,126,34,.05); }
+  .rh .risk-bar { background:#e67e22; width:75%; }
+  .rm { color:#f1c40f; border-color:rgba(241,196,15,.3); background:rgba(241,196,15,.05); }
+  .rm .risk-bar { background:#f1c40f; width:50%; }
+  .rl { color:#2ecc71; border-color:rgba(46,204,113,.3); background:rgba(46,204,113,.05); }
+  .rl .risk-bar { background:#2ecc71; width:25%; }
+  .risk-desc { font-size: 11px; color: var(--muted); margin-top: 6px; }
+
+  /* ── Terminal ── */
+  .terminal {
+    background: #010b14;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+  }
+  .term-bar {
+    background: var(--bg3);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .term-dot { width:10px; height:10px; border-radius:50%; }
+  .td1{background:#ff5f56} .td2{background:#ffbd2e} .td3{background:#27c93f}
+  .term-title { font-size: 11px; color: var(--muted); margin-left: 8px; letter-spacing:.1em; }
+  .term-body { padding: 20px; font-size: 12px; line-height: 2; overflow-x: auto; }
+  .t-prompt { color: var(--green); }
+  .t-cmd    { color: #fff; }
+  .t-info   { color: var(--cyan); }
+  .t-ok     { color: var(--green); }
+  .t-warn   { color: var(--orange); }
+  .t-err    { color: var(--red); }
+  .t-dim    { color: var(--muted); }
+  .cursor   { display:inline-block; width:8px; height:14px; background:var(--cyan); animation:blink .8s step-end infinite; vertical-align:middle; }
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+  /* ── Report preview ── */
+  .report-mock {
+    background: #060b14;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .report-nav {
+    background: var(--bg3);
+    padding: 0 20px;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .rnav-item {
+    padding: 12px 16px;
+    font-size: 11px;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--muted);
+    letter-spacing: .08em;
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .rnav-item:hover, .rnav-item.active { color: var(--cyan); border-bottom-color: var(--cyan); }
+  .report-body { padding: 24px; }
+  .r-stat-row { display: grid; grid-template-columns: repeat(6,1fr); gap: 10px; margin-bottom: 20px; }
+  .r-stat { background: var(--bg3); border: 1px solid var(--border); border-radius: 4px; padding: 14px; text-align:center; }
+  .r-stat-n { font-family:'Orbitron',sans-serif; font-size:22px; font-weight:700; }
+  .r-stat-l { font-size:10px; color:var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:.1em; margin-top:2px; }
+  .r-table { width:100%; border-collapse:collapse; font-size:11px; font-family:'Share Tech Mono',monospace; }
+  .r-table th { text-align:left; padding:8px 10px; background:var(--bg3); color:var(--muted); letter-spacing:.08em; border-bottom:1px solid var(--border); }
+  .r-table td { padding:8px 10px; border-bottom:1px solid rgba(15,42,74,.6); color:#8ab8cc; }
+  .r-table tr:last-child td { border-bottom:none; }
+  .rbadge { font-size:10px; padding:2px 8px; border-radius:2px; font-family:'Share Tech Mono',monospace; }
+
+  /* ── File tree ── */
+  .tree {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 24px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+  .tree-dir { color: var(--cyan); }
+  .tree-file { color: #8ab8cc; }
+  .tree-comment { color: var(--muted); font-size: 11px; }
+  .tree-main { color: var(--green); font-weight: bold; }
+
+  /* ── Stats bar ── */
+  .stats-bar {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px,1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 48px;
+  }
+  .stat-item { background: var(--bg2); padding: 20px; text-align:center; }
+  .stat-n { font-family:'Orbitron',sans-serif; font-size:28px; font-weight:700; color:var(--cyan); }
+  .stat-l { font-size:11px; color:var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:.1em; margin-top:4px; text-transform:uppercase; }
+
+  /* ── Footer ── */
+  footer {
+    text-align: center;
+    padding: 48px 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .footer-logo {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--cyan);
+    letter-spacing: .1em;
+    margin-bottom: 12px;
+  }
+  .footer-sub { font-size: 12px; color: var(--muted); font-family:'Share Tech Mono',monospace; letter-spacing:.1em; }
+
+  /* ── Stats hexagon grid ── */
+  .stats-hex-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin-bottom: 56px;
+  }
+  .hex-card {
+    position: relative;
+    width: 160px;
+    text-align: center;
+    cursor: default;
+  }
+  .hex-bg {
+    width: 140px;
+    height: 140px;
+    margin: 0 auto 10px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    transition: border-color .3s, transform .3s;
+  }
+  .hex-bg::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 50% 0%, var(--hc, rgba(0,212,255,.08)) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hex-bg::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--hc, var(--cyan));
+    opacity: .6;
+    transition: opacity .3s;
+  }
+  .hex-card:hover .hex-bg {
+    border-color: var(--hc, var(--cyan));
+    transform: translateY(-6px);
+  }
+  .hex-card:hover .hex-bg::after { opacity: 1; }
+  .hex-icon { font-size: 20px; margin-bottom: 6px; }
+  .hex-num {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 30px;
+    font-weight: 900;
+    color: var(--hc, var(--cyan));
+    line-height: 1;
+    filter: drop-shadow(0 0 8px var(--hc, rgba(0,212,255,.5)));
+  }
+  .hex-unit {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: .15em;
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .hex-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: .1em;
+    text-transform: uppercase;
+  }
+
+  /* ── Custom scrollbar ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #020810; }
+  ::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #00d4ff, #0080ff);
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #00ffcc, #00d4ff);
+  }
+  ::-webkit-scrollbar-corner { background: #020810; }
+
+  /* ── Stats bar (keep for fallback, hidden) ── */
+  .stats-bar { display: none; }
+
+  /* ── Developer card ── */
+  .dev-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 28px 32px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-top: 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  .dev-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, var(--cyan), var(--blue));
+  }
+  .dev-avatar {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0a3d62, #00d4ff22);
+    border: 2px solid rgba(0,212,255,.3);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 28px;
+    flex-shrink: 0;
+  }
+  .dev-info { flex: 1; }
+  .dev-role {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    color: var(--cyan);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+    opacity: .8;
+  }
+  .dev-name {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: .04em;
+    margin-bottom: 6px;
+  }
+  .dev-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+  .dev-tags { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .dev-tag {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing: .1em;
+    border: 1px solid rgba(0,212,255,.2);
+    color: rgba(0,212,255,.7);
+    background: rgba(0,212,255,.05);
+  }
+
+  /* ── Improved file tree ── */
+  .tree {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 13px;
+  }
+  .tree-topbar {
+    background: var(--bg3);
+    padding: 10px 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+  .tree-dot { width:10px;height:10px;border-radius:50%; }
+  .td1{background:#ff5f56}.td2{background:#ffbd2e}.td3{background:#27c93f}
+  .tree-title { font-size:11px; color:var(--muted); margin-left:8px; letter-spacing:.1em; }
+  .tree-body { padding: 20px 24px; line-height: 2.1; }
+  .tree-row { display: flex; align-items: center; gap: 0; }
+  .tree-line { color: rgba(0,212,255,.18); user-select:none; white-space:pre; }
+  .tree-icon { margin-right: 6px; font-size: 12px; }
+  .tree-name-dir  { color: var(--cyan); font-weight: 500; }
+  .tree-name-main { color: var(--green); font-weight: 700; }
+  .tree-name-file { color: #8ab8cc; }
+  .tree-comment   { color: rgba(58,106,138,.7); font-size: 11px; margin-left: 10px; }
+  .tree-spacer    { flex: 1; border-bottom: 1px dotted rgba(0,212,255,.06); margin: 0 8px; }
+
+  @media(max-width:640px) {
+    .compare { grid-template-columns:1fr; }
+    .risk-grid { grid-template-columns: repeat(2,1fr); }
+    .r-stat-row { grid-template-columns: repeat(3,1fr); }
+    .pipeline { gap: 8px; flex-wrap: wrap; }
+    .pipe-step::after { display:none; }
+    .pipe-step { border-right: 1px solid var(--border); border-radius: 4px; }
+    .stats-hex-grid { gap: 12px; }
+    .hex-card { width: 130px; }
+    .hex-bg { width: 116px; height: 116px; }
+    .hex-num { font-size: 24px; }
+    .dev-card { flex-direction: column; text-align: center; }
+    .dev-card::before { top:0;left:0;right:0;bottom:auto;width:auto;height:3px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- ── HERO ── -->
+<div class="hero">
+  <div class="scan-line"></div>
+  <div class="eyebrow">// Developed by R.Shasi Kiran · Network Security Tool · v1.0</div>
+  <pre class="logo-ascii">
+ ███╗   ██╗███████╗████████╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
+ ████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
+ ██╔██╗ ██║█████╗     ██║   ██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
+ ██║╚██╗██║██╔══╝     ██║   ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
+ ██║ ╚████║███████╗   ██║   ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
+ ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝</pre>
+
+  <div class="hero-title">NetRecon</div>
+  <div class="hero-sub">Advanced Network Reconnaissance & Visual Reporting Tool</div>
+
+  <div class="badges">
+    <span class="badge badge-cyan">Python 3.8+</span>
+    <span class="badge badge-blue">Kali Linux</span>
+    <span class="badge badge-orange">Nmap Engine</span>
+    <span class="badge badge-red">NVD CVE API</span>
+    <span class="badge badge-green">MIT License</span>
+    <span class="badge badge-cyan">1417+ Lines</span>
+    <span class="badge badge-blue">8 Modules</span>
+  </div>
+
+  <div class="hero-tagline">⬡ ONE COMMAND · COMPLETE PICTURE OF YOUR TARGET ⬡</div>
+</div>
+
+<div class="container">
+
+  <!-- ── STATS HEX GRID ── -->
+  <section>
+    <div class="stats-hex-grid">
+      <div class="hex-card">
+        <div class="hex-bg" style="--hc:rgba(0,212,255,0.15)">
+          <div class="hex-icon">⬡</div>
+          <div class="hex-num" style="--hc:#00d4ff">8</div>
+          <div class="hex-unit">count</div>
+        </div>
+        <div class="hex-label">Modules</div>
+      </div>
+      <div class="hex-card">
+        <div class="hex-bg" style="--hc:rgba(255,51,102,0.15)">
+          <div class="hex-icon">〈/〉</div>
+          <div class="hex-num" style="--hc:#ff3366">1417</div>
+          <div class="hex-unit">lines</div>
+        </div>
+        <div class="hex-label">Lines of Code</div>
+      </div>
+      <div class="hex-card">
+        <div class="hex-bg" style="--hc:rgba(0,255,136,0.15)">
+          <div class="hex-icon">◈</div>
+          <div class="hex-num" style="--hc:#00ff88">9</div>
+          <div class="hex-unit">total</div>
+        </div>
+        <div class="hex-label">Capabilities</div>
+      </div>
+      <div class="hex-card">
+        <div class="hex-bg" style="--hc:rgba(255,215,0,0.15)">
+          <div class="hex-icon">📄</div>
+          <div class="hex-num" style="--hc:#ffd700">3</div>
+          <div class="hex-unit">formats</div>
+        </div>
+        <div class="hex-label">Report Formats</div>
+      </div>
+      <div class="hex-card">
+        <div class="hex-bg" style="--hc:rgba(255,107,0,0.15)">
+          <div class="hex-icon">⚡</div>
+          <div class="hex-num" style="--hc:#ff6b00">100</div>
+          <div class="hex-unit">max score</div>
+        </div>
+        <div class="hex-label">Risk Scale</div>
+      </div>
+      <div class="hex-card">
+        <div class="hex-bg" style="--hc:rgba(122,180,255,0.15)">
+          <div class="hex-icon">🕓</div>
+          <div class="hex-num" style="--hc:#7ab4ff">∞</div>
+          <div class="hex-unit">stored</div>
+        </div>
+        <div class="hex-label">Scan History</div>
+      </div>
+    </div>
+
+    <!-- Compare -->
+    <div class="sec-label">// the problem we solve</div>
+    <div class="sec-title">Before vs After NetRecon</div>
+    <div class="compare">
+      <div class="compare-col bad">
+        <div class="compare-head r">✗ Without NetRecon</div>
+        <div class="compare-item"><span>→</span> Run nmap manually, get wall of text</div>
+        <div class="compare-item"><span>→</span> Separately run whois, dig, subfinder</div>
+        <div class="compare-item"><span>→</span> Google CVEs one by one for each service</div>
+        <div class="compare-item"><span>→</span> Check Shodan manually in browser</div>
+        <div class="compare-item"><span>→</span> Write your own report from scratch</div>
+        <div class="compare-item"><span>→</span> No risk scoring — guess what's critical</div>
+        <div class="compare-item"><span>→</span> No history — re-scan and compare manually</div>
+      </div>
+      <div class="compare-col good">
+        <div class="compare-head g">✓ With NetRecon</div>
+        <div class="compare-item"><span>→</span> One command handles everything</div>
+        <div class="compare-item"><span>→</span> WHOIS, DNS, Shodan — all automatic</div>
+        <div class="compare-item"><span>→</span> CVEs pulled from NVD API with CVSS scores</div>
+        <div class="compare-item"><span>→</span> Shodan passive intel added automatically</div>
+        <div class="compare-item"><span>→</span> Professional HTML/PDF report generated</div>
+        <div class="compare-item"><span>→</span> Every host scored Critical → Low</div>
+        <div class="compare-item"><span>→</span> SQLite tracks changes between scans</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── PIPELINE ── -->
+  <section>
+    <div class="sec-label">// how it works</div>
+    <div class="sec-title">Automated Recon Pipeline</div>
+    <div class="pipeline">
+      <div class="pipe-step">
+        <div class="pipe-num">01</div>
+        <div class="pipe-name">Target Input</div>
+        <div class="pipe-desc">IP, domain, or CIDR subnet via CLI</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">02</div>
+        <div class="pipe-name">Nmap Scan</div>
+        <div class="pipe-desc">Ports, services, OS, traceroute</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">03</div>
+        <div class="pipe-name">WHOIS + DNS</div>
+        <div class="pipe-desc">Passive domain identity lookup</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">04</div>
+        <div class="pipe-name">Shodan</div>
+        <div class="pipe-desc">Indexed passive intelligence</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">05</div>
+        <div class="pipe-name">CVE Mapping</div>
+        <div class="pipe-desc">NVD API — real CVSS scores</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">06</div>
+        <div class="pipe-name">Subdomains</div>
+        <div class="pipe-desc">Attack surface enumeration</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">07</div>
+        <div class="pipe-name">Risk Score</div>
+        <div class="pipe-desc">Weighted 0–100 per host</div>
+      </div>
+      <div class="pipe-step">
+        <div class="pipe-num">08</div>
+        <div class="pipe-name">Report</div>
+        <div class="pipe-desc">HTML + PDF analyst report</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FEATURES ── -->
+  <section>
+    <div class="sec-label">// capabilities</div>
+    <div class="sec-title">What NetRecon Can Do</div>
+    <div class="feat-grid">
+      <div class="feat-card">
+        <div class="feat-icon">🔎</div>
+        <div class="feat-name">Nmap Engine</div>
+        <div class="feat-desc">Runs deep scans automatically — quick, normal, or aggressive mode. Detects open ports, service versions, OS fingerprint, and traceroute path.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📋</div>
+        <div class="feat-name">WHOIS + DNS</div>
+        <div class="feat-desc">Fetches domain ownership, registrar, expiry date, and all DNS records. Checks SPF and DMARC — flags missing records as phishing risks.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🛡️</div>
+        <div class="feat-name">CVE Mapping</div>
+        <div class="feat-desc">Queries the NVD API for every detected service version. Returns real CVE IDs, CVSS scores, severity ratings, and direct NVD links.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">👁️</div>
+        <div class="feat-name">Shodan Intel</div>
+        <div class="feat-desc">Passive enrichment — queries Shodan without touching the target. Returns ISP, geolocation, historical ports, and tagged vulnerabilities.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🌐</div>
+        <div class="feat-name">Subdomain Enum</div>
+        <div class="feat-desc">Discovers all subdomains via subfinder and DNS brute-force. Resolves each to an IP — maps the full external attack surface.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📊</div>
+        <div class="feat-name">Risk Scoring</div>
+        <div class="feat-desc">Weighted algorithm scores every host 0–100. Labels each Critical / High / Medium / Low based on open ports, CVEs, and Shodan tags.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🕓</div>
+        <div class="feat-name">Scan History</div>
+        <div class="feat-desc">Every scan stored in SQLite. Re-scanning shows exactly what changed — new ports, closed ports, and risk score delta since last scan.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">🕸️</div>
+        <div class="feat-name">Topology Graph</div>
+        <div class="feat-desc">Maltego-style interactive vis.js node graph. Target at center — ports, services, and subdomains as color-coded draggable nodes.</div>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon">📄</div>
+        <div class="feat-name">HTML + PDF Report</div>
+        <div class="feat-desc">Single self-contained HTML file with sticky nav, scroll animations, and dark theme. One-click PDF export for clients or submissions.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RISK SCORING ── -->
+  <section>
+    <div class="sec-label">// risk engine</div>
+    <div class="sec-title">Risk Scoring System</div>
+    <div class="risk-grid">
+      <div class="risk-card rc">
+        <span class="risk-score">80+</span>
+        <span class="risk-label">CRITICAL</span>
+        <div class="risk-desc">Telnet, RDP, SMB open. Active exploitable CVEs. Immediate action required.</div>
+        <div class="risk-bar"></div>
+      </div>
+      <div class="risk-card rh">
+        <span class="risk-score">55+</span>
+        <span class="risk-label">HIGH</span>
+        <div class="risk-desc">High-risk ports open. High CVSS CVEs matched. Remediate soon.</div>
+        <div class="risk-bar"></div>
+      </div>
+      <div class="risk-card rm">
+        <span class="risk-score">30+</span>
+        <span class="risk-label">MEDIUM</span>
+        <div class="risk-desc">Some exposure present. Medium severity vulnerabilities detected.</div>
+        <div class="risk-bar"></div>
+      </div>
+      <div class="risk-card rl">
+        <span class="risk-score">0+</span>
+        <span class="risk-label">LOW</span>
+        <div class="risk-desc">Minimal exposure. Standard ports, no critical CVEs found.</div>
+        <div class="risk-bar"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TERMINAL ── -->
+  <section>
+    <div class="sec-label">// live demo</div>
+    <div class="sec-title">Terminal Output</div>
+    <div class="terminal">
+      <div class="term-bar">
+        <div class="term-dot td1"></div>
+        <div class="term-dot td2"></div>
+        <div class="term-dot td3"></div>
+        <span class="term-title">kali@kali — NetRecon v1.0</span>
+      </div>
+      <div class="term-body">
+<span class="t-prompt">┌──(kali㉿kali)-[~/Desktop/NetRecon]</span>
+<span class="t-prompt">└─$ </span><span class="t-cmd">sudo python3 recon.py -t scanme.nmap.org -i normal</span>
+
+<span class="t-dim"> ███╗   ██╗███████╗████████╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗</span>
+<span class="t-dim"> NetRecon v1.0 — Advanced Network Reconnaissance Tool</span>
+<span class="t-err"> [!] For authorized use only. Always obtain proper permission.</span>
+
+<span class="t-info"> [*] Target: scanme.nmap.org</span>
+<span class="t-info"> [*] Intensity: normal | Format: html</span>
+<span class="t-info"> [*] Started at: 2024-11-15 14:32:11</span>
+
+<span class="t-info"> [*] Running nmap scan...</span>
+<span class="t-ok"> [+] Discovered 1 host(s), 6 open port(s)</span>
+<span class="t-info"> [*] Fetching WHOIS & DNS records...</span>
+<span class="t-ok"> [+] WHOIS & DNS enrichment complete</span>
+<span class="t-info"> [*] Looking up CVEs via NVD API...</span>
+<span class="t-ok"> [+] Found 5 CVE(s) — 2 CRITICAL, 1 HIGH, 2 MEDIUM</span>
+<span class="t-info"> [*] Enumerating subdomains...</span>
+<span class="t-ok"> [+] Found 6 subdomain(s)</span>
+<span class="t-info"> [*] Calculating risk scores...</span>
+<span class="t-ok"> [+] Overall risk: <span style="color:#e74c3c;font-weight:bold">CRITICAL</span> (Score: 95/100)</span>
+<span class="t-info"> [*] Saving to scan history...</span>
+<span class="t-ok"> [+] Diff: 2 new port(s) since last scan (+30 risk delta)</span>
+<span class="t-info"> [*] Generating report...</span>
+<span class="t-ok"> [+] HTML report: output/netrecon_report_20241115_143211.html</span>
+
+<span class="t-ok"> [+] Scan complete!</span>
+<span class="t-prompt">└─$ </span><span class="cursor"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── REPORT PREVIEW ── -->
+  <section>
+    <div class="sec-label">// output preview</div>
+    <div class="sec-title">Generated Report — Live Preview</div>
+    <div class="report-mock">
+      <div class="report-nav">
+        <div class="rnav-item active">Summary</div>
+        <div class="rnav-item">Topology</div>
+        <div class="rnav-item">Hosts</div>
+        <div class="rnav-item">Ports</div>
+        <div class="rnav-item">CVEs</div>
+        <div class="rnav-item">Subdomains</div>
+        <div class="rnav-item">WHOIS/DNS</div>
+        <div class="rnav-item">Traceroute</div>
+      </div>
+      <div class="report-body">
+        <div class="r-stat-row">
+          <div class="r-stat"><div class="r-stat-n" style="color:var(--cyan)">1</div><div class="r-stat-l">Hosts</div></div>
+          <div class="r-stat"><div class="r-stat-n" style="color:var(--cyan)">6</div><div class="r-stat-l">Ports</div></div>
+          <div class="r-stat"><div class="r-stat-n" style="color:#e74c3c">2</div><div class="r-stat-l">Critical CVEs</div></div>
+          <div class="r-stat"><div class="r-stat-n" style="color:#e67e22">1</div><div class="r-stat-l">High CVEs</div></div>
+          <div class="r-stat"><div class="r-stat-n" style="color:#7ab4ff">6</div><div class="r-stat-l">Subdomains</div></div>
+          <div class="r-stat"><div class="r-stat-n" style="color:#e74c3c">95</div><div class="r-stat-l">Risk Score</div></div>
+        </div>
+        <table class="r-table">
+          <tr><th>Port</th><th>Service</th><th>Version</th><th>Risk</th></tr>
+          <tr><td>22</td><td>SSH</td><td>OpenSSH 6.6.1p1</td><td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.3)">MEDIUM</span></td></tr>
+          <tr><td>80</td><td>HTTP</td><td>Apache httpd 2.4.7</td><td><span class="rbadge" style="background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.3)">LOW</span></td></tr>
+          <tr><td>23</td><td>Telnet</td><td>—</td><td><span class="rbadge" style="background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)">CRITICAL</span></td></tr>
+          <tr><td>3389</td><td>RDP</td><td>Microsoft Terminal Services</td><td><span class="rbadge" style="background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)">CRITICAL</span></td></tr>
+          <tr><td>3306</td><td>MySQL</td><td>MySQL 5.5.62</td><td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.3)">HIGH</span></td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FILE TREE ── -->
+  <section>
+    <div class="sec-label">// project structure</div>
+    <div class="sec-title">File Structure</div>
+    <div class="tree">
+      <div class="tree-topbar">
+        <div class="tree-dot td1"></div>
+        <div class="tree-dot td2"></div>
+        <div class="tree-dot td3"></div>
+        <span class="tree-title">RShasikiran / NetRecon</span>
+      </div>
+      <div class="tree-body">
+
+        <div class="tree-row">
+          <span class="tree-line">  </span>
+          <span class="tree-icon">📁</span>
+          <span class="tree-name-dir">NetRecon/</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  ├── </span>
+          <span class="tree-icon">🟢</span>
+          <span class="tree-name-main">recon.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← START HERE</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  ├── </span>
+          <span class="tree-icon">⚙️</span>
+          <span class="tree-name-file">install.sh</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← one-time Kali setup</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  ├── </span>
+          <span class="tree-icon">📋</span>
+          <span class="tree-name-file">requirements.txt</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← Python packages</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  ├── </span>
+          <span class="tree-icon">📖</span>
+          <span class="tree-name-file">README.md</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← documentation</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  ├── </span>
+          <span class="tree-icon">⚖️</span>
+          <span class="tree-name-file">LICENSE</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← MIT license</span>
+        </div>
+
+        <div class="tree-row" style="margin-top:4px">
+          <span class="tree-line">  ├── </span>
+          <span class="tree-icon">📦</span>
+          <span class="tree-name-dir">modules/</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">🔎</span>
+          <span class="tree-name-file">scanner.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← nmap engine + XML parser</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">🌐</span>
+          <span class="tree-name-file">whois_dns.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← WHOIS + DNS enrichment</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">🛡️</span>
+          <span class="tree-name-file">cve_lookup.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← NVD API CVE mapping</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">👁️</span>
+          <span class="tree-name-file">shodan_lookup.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← Shodan passive intel</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">🌍</span>
+          <span class="tree-name-file">subdomain_enum.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← subdomain discovery</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">📊</span>
+          <span class="tree-name-file">risk_scorer.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← weighted risk scoring</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   ├── </span>
+          <span class="tree-icon">🕓</span>
+          <span class="tree-name-file">history.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← SQLite scan history</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">  │   └── </span>
+          <span class="tree-icon">📄</span>
+          <span class="tree-name-file">report_gen.py</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← HTML/PDF report builder</span>
+        </div>
+
+        <div class="tree-row" style="margin-top:4px">
+          <span class="tree-line">  └── </span>
+          <span class="tree-icon">📂</span>
+          <span class="tree-name-dir">output/</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">      ├── </span>
+          <span class="tree-icon">🌟</span>
+          <span class="tree-name-file">demo_report.html</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← sample report preview</span>
+        </div>
+
+        <div class="tree-row">
+          <span class="tree-line">      └── </span>
+          <span class="tree-icon">🗄️</span>
+          <span class="tree-name-file">netrecon_history.db</span>
+          <span class="tree-spacer"></span>
+          <span class="tree-comment">← auto-created SQLite DB</span>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- ── DEVELOPER CARD + FOOTER ── -->
+<div class="container">
+  <div class="dev-card">
+    <div class="dev-avatar">👨‍💻</div>
+    <div class="dev-info">
+      <div class="dev-role">// Tool Developer</div>
+      <div class="dev-name">R. Shasi Kiran</div>
+      <div class="dev-desc">Built NetRecon from scratch — a full-spectrum network reconnaissance and visual reporting framework. BTech Cybersecurity student with a focus on offensive security tools, network analysis, and Python automation.</div>
+      <div class="dev-tags">
+        <span class="dev-tag">Python</span>
+        <span class="dev-tag">Kali Linux</span>
+        <span class="dev-tag">Network Security</span>
+        <span class="dev-tag">Penetration Testing</span>
+        <span class="dev-tag">OSINT</span>
+        <span class="dev-tag">BTech Cybersecurity</span>
+      </div>
+    </div>
+    <div style="text-align:right;flex-shrink:0">
+      <div style="font-family:'Share Tech Mono',monospace;font-size:10px;color:rgba(0,212,255,.5);letter-spacing:.15em;margin-bottom:8px">GITHUB</div>
+      <div style="font-family:'Orbitron',monospace;font-size:13px;color:#00d4ff;letter-spacing:.05em">RShasikiran</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-logo">NETRECON v1.0</div>
+  <div class="footer-sub" style="margin-bottom:6px">Developed by <span style="color:var(--cyan)">R. Shasi Kiran</span> · Built on Kali Linux</div>
+  <div style="margin-top:16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:rgba(58,106,138,.5);letter-spacing:.08em">
+    FOR AUTHORIZED USE ONLY &nbsp;·&nbsp; scanme.nmap.org IS THE LEGAL TEST TARGET
+  </div>
+</footer>
+
+<script>
+document.querySelectorAll('.rnav-item').forEach(el => {
+  el.addEventListener('click', function() {
+    document.querySelectorAll('.rnav-item').forEach(e => e.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

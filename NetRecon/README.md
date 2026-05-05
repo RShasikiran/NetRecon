@@ -253,11 +253,11 @@ usage: recon.py [-h] -t TARGET [-o OUTPUT] [-i {quick,normal,aggressive}]
 
 ## About
 
-Developed by **[Your Name]** as a final-year BTech Cybersecurity capstone project.
+Developed by **[R.Shasi Kiran]** as a BTech Cybersecurity project.
 
-- 🎓 BTech Cybersecurity — [Your College Name]
-- 📧 [your.email@example.com]
-- 🔗 [linkedin.com/in/yourprofile]
+- 🎓 BTech Cybersecurity — [Lovely Professional University]
+- 📧 [shashikiranreyya@gmail.com]
+- 🔗 [linkedin.com/in/reyya-shasi-kiran116]
 
 ---
 

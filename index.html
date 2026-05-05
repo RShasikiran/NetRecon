@@ -672,7 +672,6 @@
  ██║ ╚████║███████╗   ██║   ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
  ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝</pre>
 
-  <div class="hero-title">NetRecon</div>
   <div class="hero-sub">Advanced Network Reconnaissance & Visual Reporting Tool</div>
 
   <div class="badges">
@@ -950,35 +949,296 @@
   <!-- ── REPORT PREVIEW ── -->
   <section>
     <div class="sec-label">// output preview</div>
-    <div class="sec-title">Generated Report — Live Preview</div>
+    <div class="sec-title">Generated Report — Interactive Preview</div>
+    <p style="font-size:13px;color:#3a6a8a;margin-bottom:20px;font-family:'Share Tech Mono',monospace">
+      Click each tab below to see what NetRecon shows in the actual report for <span style="color:#00d4ff">scanme.nmap.org</span>
+    </p>
     <div class="report-mock">
-      <div class="report-nav">
-        <div class="rnav-item active">Summary</div>
-        <div class="rnav-item">Topology</div>
-        <div class="rnav-item">Hosts</div>
-        <div class="rnav-item">Ports</div>
-        <div class="rnav-item">CVEs</div>
-        <div class="rnav-item">Subdomains</div>
-        <div class="rnav-item">WHOIS/DNS</div>
-        <div class="rnav-item">Traceroute</div>
+      <div class="report-nav" id="rnav">
+        <div class="rnav-item active" onclick="showTab('summary',this)">📋 Summary</div>
+        <div class="rnav-item" onclick="showTab('topology',this)">🕸 Topology</div>
+        <div class="rnav-item" onclick="showTab('hosts',this)">🖥 Hosts</div>
+        <div class="rnav-item" onclick="showTab('ports',this)">🔓 Ports</div>
+        <div class="rnav-item" onclick="showTab('cves',this)">🛡 CVEs</div>
+        <div class="rnav-item" onclick="showTab('subdomains',this)">🌐 Subdomains</div>
+        <div class="rnav-item" onclick="showTab('whois',this)">🔍 WHOIS/DNS</div>
+        <div class="rnav-item" onclick="showTab('traceroute',this)">📡 Traceroute</div>
       </div>
       <div class="report-body">
-        <div class="r-stat-row">
-          <div class="r-stat"><div class="r-stat-n" style="color:var(--cyan)">1</div><div class="r-stat-l">Hosts</div></div>
-          <div class="r-stat"><div class="r-stat-n" style="color:var(--cyan)">6</div><div class="r-stat-l">Ports</div></div>
-          <div class="r-stat"><div class="r-stat-n" style="color:#e74c3c">2</div><div class="r-stat-l">Critical CVEs</div></div>
-          <div class="r-stat"><div class="r-stat-n" style="color:#e67e22">1</div><div class="r-stat-l">High CVEs</div></div>
-          <div class="r-stat"><div class="r-stat-n" style="color:#7ab4ff">6</div><div class="r-stat-l">Subdomains</div></div>
-          <div class="r-stat"><div class="r-stat-n" style="color:#e74c3c">95</div><div class="r-stat-l">Risk Score</div></div>
+
+        <!-- SUMMARY TAB -->
+        <div class="rtab" id="tab-summary">
+          <div class="r-stat-row">
+            <div class="r-stat"><div class="r-stat-n" style="color:#00d4ff">1</div><div class="r-stat-l">Hosts</div></div>
+            <div class="r-stat"><div class="r-stat-n" style="color:#00d4ff">6</div><div class="r-stat-l">Open Ports</div></div>
+            <div class="r-stat"><div class="r-stat-n" style="color:#e74c3c">2</div><div class="r-stat-l">Critical CVEs</div></div>
+            <div class="r-stat"><div class="r-stat-n" style="color:#e67e22">1</div><div class="r-stat-l">High CVEs</div></div>
+            <div class="r-stat"><div class="r-stat-n" style="color:#7ab4ff">6</div><div class="r-stat-l">Subdomains</div></div>
+            <div class="r-stat"><div class="r-stat-n" style="color:#e74c3c">95</div><div class="r-stat-l">Risk Score</div></div>
+          </div>
+          <div style="background:#0a1a2e;border:1px solid #0f2a4a;border-radius:6px;padding:16px 20px;font-size:13px;color:#8ab8cc;line-height:1.9;font-family:'Share Tech Mono',monospace">
+            Target <span style="color:#00d4ff">scanme.nmap.org</span> was scanned on <span style="color:#ffd700">2024-11-15 14:32:11</span>.
+            The scan discovered <span style="color:#00ff88">1 active host</span> with
+            <span style="color:#00ff88">6 open ports</span>. CVE analysis identified
+            <span style="color:#e74c3c">5 vulnerabilities</span>, of which
+            <span style="color:#e74c3c">2 are rated CRITICAL</span>.
+            Subdomain enumeration discovered <span style="color:#7ab4ff">6 subdomains</span>
+            expanding the attack surface. Overall risk posture is rated
+            <span style="color:#e74c3c;font-weight:bold">CRITICAL (95/100)</span>.
+            Immediate remediation recommended for Telnet (port 23) and RDP (port 3389).
+          </div>
         </div>
-        <table class="r-table">
-          <tr><th>Port</th><th>Service</th><th>Version</th><th>Risk</th></tr>
-          <tr><td>22</td><td>SSH</td><td>OpenSSH 6.6.1p1</td><td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.3)">MEDIUM</span></td></tr>
-          <tr><td>80</td><td>HTTP</td><td>Apache httpd 2.4.7</td><td><span class="rbadge" style="background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.3)">LOW</span></td></tr>
-          <tr><td>23</td><td>Telnet</td><td>—</td><td><span class="rbadge" style="background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)">CRITICAL</span></td></tr>
-          <tr><td>3389</td><td>RDP</td><td>Microsoft Terminal Services</td><td><span class="rbadge" style="background:rgba(231,76,60,.15);color:#e74c3c;border:1px solid rgba(231,76,60,.3)">CRITICAL</span></td></tr>
-          <tr><td>3306</td><td>MySQL</td><td>MySQL 5.5.62</td><td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.3)">HIGH</span></td></tr>
-        </table>
+
+        <!-- TOPOLOGY TAB -->
+        <div class="rtab" id="tab-topology" style="display:none">
+          <div style="background:#060b14;border:1px solid #0f2a4a;border-radius:6px;padding:16px;margin-bottom:14px;font-size:12px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">
+            Interactive vis.js node graph — drag nodes, zoom in/out, hover for details
+          </div>
+          <div id="topo-graph" style="width:100%;height:320px;background:#060b14;border:1px solid #0f2a4a;border-radius:6px;position:relative;overflow:hidden">
+            <svg width="100%" height="100%" viewBox="0 0 700 300">
+              <!-- center node -->
+              <circle cx="350" cy="150" r="36" fill="#0a1628" stroke="#00d4ff" stroke-width="2"/>
+              <text x="350" y="145" text-anchor="middle" fill="#00d4ff" font-size="10" font-family="monospace">scanme</text>
+              <text x="350" y="159" text-anchor="middle" fill="#00d4ff" font-size="9" font-family="monospace">nmap.org</text>
+
+              <!-- port 22 SSH -->
+              <line x1="350" y1="114" x2="210" y2="55" stroke="#1e3a5f" stroke-width="1.5"/>
+              <circle cx="210" cy="45" r="24" fill="#0a1628" stroke="#e67e22" stroke-width="1.5"/>
+              <text x="210" y="41" text-anchor="middle" fill="#e67e22" font-size="9" font-family="monospace">:22</text>
+              <text x="210" y="53" text-anchor="middle" fill="#e67e22" font-size="8" font-family="monospace">SSH</text>
+
+              <!-- port 80 HTTP -->
+              <line x1="350" y1="114" x2="140" y2="150" stroke="#1e3a5f" stroke-width="1.5"/>
+              <circle cx="115" cy="150" r="24" fill="#0a1628" stroke="#2ecc71" stroke-width="1.5"/>
+              <text x="115" y="146" text-anchor="middle" fill="#2ecc71" font-size="9" font-family="monospace">:80</text>
+              <text x="115" y="158" text-anchor="middle" fill="#2ecc71" font-size="8" font-family="monospace">HTTP</text>
+
+              <!-- port 23 TELNET -->
+              <line x1="350" y1="186" x2="210" y2="255" stroke="#1e3a5f" stroke-width="1.5"/>
+              <circle cx="210" cy="265" r="24" fill="#3a0a0a" stroke="#e74c3c" stroke-width="2"/>
+              <text x="210" y="261" text-anchor="middle" fill="#e74c3c" font-size="9" font-family="monospace">:23</text>
+              <text x="210" y="273" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="monospace">TELNET</text>
+
+              <!-- port 3389 RDP -->
+              <line x1="350" y1="186" x2="490" y2="255" stroke="#1e3a5f" stroke-width="1.5"/>
+              <circle cx="490" cy="265" r="24" fill="#3a0a0a" stroke="#e74c3c" stroke-width="2"/>
+              <text x="490" y="261" text-anchor="middle" fill="#e74c3c" font-size="9" font-family="monospace">:3389</text>
+              <text x="490" y="273" text-anchor="middle" fill="#e74c3c" font-size="8" font-family="monospace">RDP</text>
+
+              <!-- port 3306 MySQL -->
+              <line x1="350" y1="114" x2="490" y2="55" stroke="#1e3a5f" stroke-width="1.5"/>
+              <circle cx="490" cy="45" r="24" fill="#0a1628" stroke="#e67e22" stroke-width="1.5"/>
+              <text x="490" y="41" text-anchor="middle" fill="#e67e22" font-size="9" font-family="monospace">:3306</text>
+              <text x="490" y="53" text-anchor="middle" fill="#e67e22" font-size="8" font-family="monospace">MySQL</text>
+
+              <!-- port 443 HTTPS -->
+              <line x1="386" y1="150" x2="570" y2="150" stroke="#1e3a5f" stroke-width="1.5"/>
+              <circle cx="590" cy="150" r="24" fill="#0a1628" stroke="#2ecc71" stroke-width="1.5"/>
+              <text x="590" y="146" text-anchor="middle" fill="#2ecc71" font-size="9" font-family="monospace">:443</text>
+              <text x="590" y="158" text-anchor="middle" fill="#2ecc71" font-size="8" font-family="monospace">HTTPS</text>
+
+              <!-- subdomain nodes -->
+              <line x1="350" y1="114" x2="350" y2="18" stroke="#1e3a5f" stroke-width="1" stroke-dasharray="3,2"/>
+              <circle cx="350" cy="12" r="10" fill="#0a1628" stroke="#8b5cf6" stroke-width="1"/>
+              <text x="350" y="15" text-anchor="middle" fill="#8b5cf6" font-size="7" font-family="monospace">www</text>
+
+              <!-- legend -->
+              <circle cx="30" cy="270" r="5" fill="#e74c3c"/>
+              <text x="40" y="274" fill="#3a6a8a" font-size="9" font-family="monospace">CRITICAL port</text>
+              <circle cx="30" cy="285" r="5" fill="#2ecc71"/>
+              <text x="40" y="289" fill="#3a6a8a" font-size="9" font-family="monospace">LOW risk port</text>
+              <circle cx="130" cy="270" r="5" fill="#8b5cf6"/>
+              <text x="140" y="274" fill="#3a6a8a" font-size="9" font-family="monospace">Subdomain</text>
+            </svg>
+          </div>
+          <div style="margin-top:10px;font-size:11px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">
+            Red nodes = CRITICAL risk ports &nbsp;·&nbsp; Green = LOW &nbsp;·&nbsp; Orange = HIGH &nbsp;·&nbsp; Purple = Subdomains
+          </div>
+        </div>
+
+        <!-- HOSTS TAB -->
+        <div class="rtab" id="tab-hosts" style="display:none">
+          <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:8px;padding:18px 22px;margin-bottom:12px">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+              <div>
+                <div style="font-family:'Orbitron',sans-serif;font-size:18px;color:#fff;margin-bottom:4px">45.33.32.156</div>
+                <div style="font-size:12px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">Linux 3.x–4.x &nbsp;·&nbsp; 92% confidence</div>
+                <div style="font-size:12px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;margin-top:2px">scanme.nmap.org</div>
+              </div>
+              <div style="text-align:right">
+                <div style="background:rgba(231,76,60,.12);color:#e74c3c;border:1px solid rgba(231,76,60,.35);padding:6px 16px;border-radius:5px;font-family:'Share Tech Mono',monospace;font-size:12px;font-weight:700;letter-spacing:.08em">CRITICAL</div>
+                <div style="font-size:11px;color:#3a6a8a;margin-top:4px;font-family:'Share Tech Mono',monospace">Score: 95/100</div>
+              </div>
+            </div>
+            <div style="font-size:12px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">6 open ports &nbsp;·&nbsp; 4 traceroute hops &nbsp;·&nbsp; MAC: N/A (remote target)</div>
+          </div>
+          <div style="font-size:12px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;padding:4px 0">
+            Risk breakdown: Port 23 (Telnet) +40 · Port 3389 (RDP) +35 · CVE-2023-38408 CVSS 9.8 +19 · Shodan tag +10
+          </div>
+        </div>
+
+        <!-- PORTS TAB -->
+        <div class="rtab" id="tab-ports" style="display:none">
+          <div style="overflow-x:auto">
+          <table class="r-table">
+            <tr><th>Port</th><th>Protocol</th><th>Service</th><th>Version Detected</th><th>Risk</th></tr>
+            <tr>
+              <td style="color:#fff;font-weight:700">22</td><td>TCP</td><td>SSH</td><td>OpenSSH 6.6.1p1 Ubuntu 2ubuntu2.13</td>
+              <td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.35)">MEDIUM</span></td>
+            </tr>
+            <tr>
+              <td style="color:#fff;font-weight:700">80</td><td>TCP</td><td>HTTP</td><td>Apache httpd 2.4.7 (Ubuntu)</td>
+              <td><span class="rbadge" style="background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.3)">LOW</span></td>
+            </tr>
+            <tr>
+              <td style="color:#fff;font-weight:700">443</td><td>TCP</td><td>HTTPS</td><td>—</td>
+              <td><span class="rbadge" style="background:rgba(46,204,113,.1);color:#2ecc71;border:1px solid rgba(46,204,113,.3)">LOW</span></td>
+            </tr>
+            <tr style="background:rgba(231,76,60,.04)">
+              <td style="color:#e74c3c;font-weight:700">23</td><td>TCP</td><td>Telnet</td><td>Linux telnetd</td>
+              <td><span class="rbadge" style="background:rgba(231,76,60,.2);color:#e74c3c;border:1px solid rgba(231,76,60,.4)">CRITICAL</span></td>
+            </tr>
+            <tr style="background:rgba(231,76,60,.04)">
+              <td style="color:#e74c3c;font-weight:700">3389</td><td>TCP</td><td>RDP</td><td>Microsoft Terminal Services</td>
+              <td><span class="rbadge" style="background:rgba(231,76,60,.2);color:#e74c3c;border:1px solid rgba(231,76,60,.4)">CRITICAL</span></td>
+            </tr>
+            <tr>
+              <td style="color:#fff;font-weight:700">3306</td><td>TCP</td><td>MySQL</td><td>MySQL 5.5.62-0ubuntu0.14.04.1</td>
+              <td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.35)">HIGH</span></td>
+            </tr>
+          </table>
+          </div>
+        </div>
+
+        <!-- CVEs TAB -->
+        <div class="rtab" id="tab-cves" style="display:none">
+          <div style="overflow-x:auto">
+          <table class="r-table">
+            <tr><th>CVE ID</th><th>Affected Service</th><th>Severity</th><th>CVSS</th><th>Description</th></tr>
+            <tr>
+              <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2023-38408" target="_blank" style="color:#7ab4ff;text-decoration:none">CVE-2023-38408</a></td>
+              <td style="color:#8ab8cc">OpenSSH 6.6.1p1</td>
+              <td><span class="rbadge" style="background:rgba(231,76,60,.2);color:#e74c3c;border:1px solid rgba(231,76,60,.4)">CRITICAL</span></td>
+              <td style="color:#e74c3c;font-weight:700">9.8</td>
+              <td style="font-size:11px;color:#3a6a8a">PKCS#11 feature in ssh-agent allows remote code execution via malicious agent forwarding</td>
+            </tr>
+            <tr>
+              <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-41773" target="_blank" style="color:#7ab4ff;text-decoration:none">CVE-2021-41773</a></td>
+              <td style="color:#8ab8cc">Apache httpd 2.4.7</td>
+              <td><span class="rbadge" style="background:rgba(231,76,60,.2);color:#e74c3c;border:1px solid rgba(231,76,60,.4)">CRITICAL</span></td>
+              <td style="color:#e74c3c;font-weight:700">9.8</td>
+              <td style="font-size:11px;color:#3a6a8a">Path traversal attack allows mapping URLs to files outside configured directories (RCE possible)</td>
+            </tr>
+            <tr>
+              <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2021-41617" target="_blank" style="color:#7ab4ff;text-decoration:none">CVE-2021-41617</a></td>
+              <td style="color:#8ab8cc">OpenSSH 6.6.1p1</td>
+              <td><span class="rbadge" style="background:rgba(230,126,34,.15);color:#e67e22;border:1px solid rgba(230,126,34,.35)">HIGH</span></td>
+              <td style="color:#e67e22;font-weight:700">7.0</td>
+              <td style="font-size:11px;color:#3a6a8a">Privilege escalation because supplemental groups are not initialized as expected in sshd</td>
+            </tr>
+            <tr>
+              <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-22721" target="_blank" style="color:#7ab4ff;text-decoration:none">CVE-2022-22721</a></td>
+              <td style="color:#8ab8cc">Apache httpd 2.4.7</td>
+              <td><span class="rbadge" style="background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.35)">MEDIUM</span></td>
+              <td style="color:#f1c40f;font-weight:700">6.5</td>
+              <td style="font-size:11px;color:#3a6a8a">XSS attacks possible via crafted XML body when LimitXMLRequestBody set below 350 bytes</td>
+            </tr>
+            <tr>
+              <td><a href="https://nvd.nist.gov/vuln/detail/CVE-2020-14765" target="_blank" style="color:#7ab4ff;text-decoration:none">CVE-2020-14765</a></td>
+              <td style="color:#8ab8cc">MySQL 5.5.62</td>
+              <td><span class="rbadge" style="background:rgba(241,196,15,.12);color:#f1c40f;border:1px solid rgba(241,196,15,.35)">MEDIUM</span></td>
+              <td style="color:#f1c40f;font-weight:700">6.8</td>
+              <td style="font-size:11px;color:#3a6a8a">High privileged attacker can cause MySQL Server to hang or crash repeatedly</td>
+            </tr>
+          </table>
+          </div>
+        </div>
+
+        <!-- SUBDOMAINS TAB -->
+        <div class="rtab" id="tab-subdomains" style="display:none">
+          <div style="overflow-x:auto">
+          <table class="r-table">
+            <tr><th>Subdomain</th><th>Resolved IP</th><th>Status</th></tr>
+            <tr><td style="color:#7ab4ff">www.nmap.org</td><td><code style="color:#8ab8cc">45.33.32.156</code></td><td><span style="color:#2ecc71">✓ Resolved</span></td></tr>
+            <tr><td style="color:#7ab4ff">mail.nmap.org</td><td><code style="color:#8ab8cc">45.33.32.158</code></td><td><span style="color:#2ecc71">✓ Resolved</span></td></tr>
+            <tr><td style="color:#7ab4ff">svn.nmap.org</td><td><code style="color:#8ab8cc">45.33.32.159</code></td><td><span style="color:#2ecc71">✓ Resolved</span></td></tr>
+            <tr><td style="color:#7ab4ff">blog.nmap.org</td><td><code style="color:#8ab8cc">45.33.32.160</code></td><td><span style="color:#2ecc71">✓ Resolved</span></td></tr>
+            <tr><td style="color:#7ab4ff">api.nmap.org</td><td><code style="color:#3a6a8a">Unresolved</code></td><td><span style="color:#e74c3c">✗ No DNS record</span></td></tr>
+            <tr><td style="color:#7ab4ff">dev.nmap.org</td><td><code style="color:#3a6a8a">Unresolved</code></td><td><span style="color:#e74c3c">✗ No DNS record</span></td></tr>
+          </table>
+          </div>
+        </div>
+
+        <!-- WHOIS TAB -->
+        <div class="rtab" id="tab-whois" style="display:none">
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-bottom:16px">
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;margin-bottom:4px">REGISTRANT</div>
+              <div style="font-size:13px;color:#c8e8ff;font-family:'Share Tech Mono',monospace">Insecure.Com LLC</div>
+            </div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;margin-bottom:4px">REGISTRAR</div>
+              <div style="font-size:13px;color:#c8e8ff;font-family:'Share Tech Mono',monospace">GoDaddy.com LLC</div>
+            </div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;margin-bottom:4px">CREATED</div>
+              <div style="font-size:13px;color:#c8e8ff;font-family:'Share Tech Mono',monospace">2008-01-23</div>
+            </div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;margin-bottom:4px">EXPIRES</div>
+              <div style="font-size:13px;color:#ffd700;font-family:'Share Tech Mono',monospace">2025-01-23</div>
+            </div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;margin-bottom:4px">COUNTRY</div>
+              <div style="font-size:13px;color:#c8e8ff;font-family:'Share Tech Mono',monospace">United States 🇺🇸</div>
+            </div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;letter-spacing:.12em;margin-bottom:4px">NAME SERVERS</div>
+              <div style="font-size:12px;color:#c8e8ff;font-family:'Share Tech Mono',monospace">ns1.linode.com<br>ns2.linode.com</div>
+            </div>
+          </div>
+          <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:14px">
+            <div style="font-size:11px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;margin-bottom:10px;letter-spacing:.1em">EMAIL SECURITY CHECKS</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <div style="padding:8px 16px;border-radius:5px;background:#1a3a2a;border:1px solid rgba(46,204,113,.3);color:#2ecc71;font-family:'Share Tech Mono',monospace;font-size:12px">✓ SPF: Present</div>
+              <div style="padding:8px 16px;border-radius:5px;background:#3a1a1a;border:1px solid rgba(231,76,60,.3);color:#e74c3c;font-family:'Share Tech Mono',monospace;font-size:12px">✗ DMARC: Missing — email spoofing risk</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TRACEROUTE TAB -->
+        <div class="rtab" id="tab-traceroute" style="display:none">
+          <div style="font-size:12px;color:#3a6a8a;font-family:'Share Tech Mono',monospace;margin-bottom:16px">Network path from scanner to scanme.nmap.org — 4 hops detected</div>
+          <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px">
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:10px 16px;text-align:center">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">HOP 1</div>
+              <div style="font-size:12px;color:#00d4ff;font-family:'Share Tech Mono',monospace">192.168.1.1</div>
+              <div style="font-size:10px;color:#3a6a8a">1.2ms</div>
+            </div>
+            <div style="color:#0f2a4a;font-size:18px">→</div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:10px 16px;text-align:center">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">HOP 2</div>
+              <div style="font-size:12px;color:#00d4ff;font-family:'Share Tech Mono',monospace">10.0.0.1</div>
+              <div style="font-size:10px;color:#3a6a8a">3.5ms</div>
+            </div>
+            <div style="color:#0f2a4a;font-size:18px">→</div>
+            <div style="background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:10px 16px;text-align:center">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">HOP 3</div>
+              <div style="font-size:12px;color:#00d4ff;font-family:'Share Tech Mono',monospace">72.14.215.1</div>
+              <div style="font-size:10px;color:#3a6a8a">12.1ms</div>
+            </div>
+            <div style="color:#0f2a4a;font-size:18px">→</div>
+            <div style="background:#0f1f3a;border:1px solid rgba(0,212,255,.3);border-radius:6px;padding:10px 16px;text-align:center">
+              <div style="font-size:10px;color:#3a6a8a;font-family:'Share Tech Mono',monospace">HOP 4 · TARGET</div>
+              <div style="font-size:12px;color:#00ff88;font-family:'Share Tech Mono',monospace">45.33.32.156</div>
+              <div style="font-size:10px;color:#3a6a8a">24.8ms</div>
+            </div>
+          </div>
+          <div style="margin-top:16px;background:#0a1628;border:1px solid #0f2a4a;border-radius:6px;padding:12px 16px;font-family:'Share Tech Mono',monospace;font-size:11px;color:#3a6a8a">
+            Total latency: 24.8ms &nbsp;·&nbsp; Hops to target: 4 &nbsp;·&nbsp; No packet loss detected &nbsp;·&nbsp; ASN: AS63949 (Linode)
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -1173,6 +1433,17 @@
 </footer>
 
 <script>
+function showTab(name, el) {
+  // Hide all tabs
+  document.querySelectorAll('.rtab').forEach(t => t.style.display = 'none');
+  // Remove active from all nav items
+  document.querySelectorAll('.rnav-item').forEach(n => n.classList.remove('active'));
+  // Show selected tab
+  document.getElementById('tab-' + name).style.display = 'block';
+  // Mark nav item active
+  el.classList.add('active');
+}
+// Also keep old nav clicks working
 document.querySelectorAll('.rnav-item').forEach(el => {
   el.addEventListener('click', function() {
     document.querySelectorAll('.rnav-item').forEach(e => e.classList.remove('active'));

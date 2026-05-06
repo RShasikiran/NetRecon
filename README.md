@@ -1,55 +1,216 @@
 [🌐 View Project Page](https://rshasikiran.github.io/NetRecon/)
 
-
-
-
 <div align="center">
 
-<!-- Header banner — pure SVG, no external service, always loads -->
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 900 200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 280" width="100%">
   <defs>
-    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#020810"/>
-      <stop offset="35%"  stop-color="#0a1628"/>
-      <stop offset="75%"  stop-color="#0a3d62"/>
-      <stop offset="100%" stop-color="#003d52"/>
+    <!-- Deep dark gradient background -->
+    <linearGradient id="hbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#010b18"/>
+      <stop offset="40%"  stop-color="#051728"/>
+      <stop offset="80%"  stop-color="#0b2d4e"/>
+      <stop offset="100%" stop-color="#010b18"/>
     </linearGradient>
-    <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.35"/>
-      <stop offset="100%" stop-color="#0a3d62" stop-opacity="0"/>
+    <!-- Cyan glow for title -->
+    <linearGradient id="titlegrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00aaff"/>
+      <stop offset="50%"  stop-color="#00ffee"/>
+      <stop offset="100%" stop-color="#00aaff"/>
     </linearGradient>
-    <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#0a3d62" stop-opacity="0"/>
-      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.25"/>
+    <!-- Glow filter for text -->
+    <filter id="glow" x="-20%" y="-40%" width="140%" height="180%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- Stronger outer glow for title -->
+    <filter id="titleglow" x="-10%" y="-60%" width="120%" height="220%">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="7" result="blur1"/>
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" result="blur2"/>
+      <feMerge>
+        <feMergeNode in="blur1"/>
+        <feMergeNode in="blur2"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <!-- Subtle grid pattern -->
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00d4ff" stroke-width="0.15" stroke-opacity="0.18"/>
+    </pattern>
+    <!-- Radial glow behind title -->
+    <radialGradient id="centerglow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Wave gradients -->
+    <linearGradient id="wgrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#00d4ff" stop-opacity="0.5"/>
+      <stop offset="70%"  stop-color="#0080ff" stop-opacity="0.4"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wgrad2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#0055ff" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="#00eeff" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#0055ff" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <!-- Background -->
-  <rect width="900" height="200" fill="url(#bg)" rx="8"/>
-  <!-- Wave shapes -->
-  <path d="M0,120 C150,80 300,160 450,110 C600,60 750,140 900,100 L900,200 L0,200 Z" fill="url(#wave1)"/>
-  <path d="M0,150 C200,110 400,180 600,130 C750,95 850,155 900,130 L900,200 L0,200 Z" fill="url(#wave2)"/>
-  <!-- Title -->
-  <text x="450" y="95" font-family="'Courier New', monospace" font-size="72" font-weight="bold"
-        fill="#00d4ff" text-anchor="middle" letter-spacing="8">NetRecon</text>
-  <!-- Subtitle -->
-  <text x="450" y="138" font-family="'Courier New', monospace" font-size="14"
-        fill="#7ab4ff" text-anchor="middle" letter-spacing="2">Advanced Network Reconnaissance &amp; Visual Reporting Tool</text>
-  <!-- Decorative lines -->
-  <line x1="120" y1="115" x2="310" y2="115" stroke="#00d4ff" stroke-opacity="0.4" stroke-width="1"/>
-  <line x1="590" y1="115" x2="780" y2="115" stroke="#00d4ff" stroke-opacity="0.4" stroke-width="1"/>
+
+  <!-- ── Base background ── -->
+  <rect width="900" height="280" fill="url(#hbg)"/>
+
+  <!-- ── Grid overlay ── -->
+  <rect width="900" height="280" fill="url(#grid)"/>
+
+  <!-- ── Center radial glow ── -->
+  <ellipse cx="450" cy="140" rx="380" ry="120" fill="url(#centerglow)"/>
+
+  <!-- ── Circuit lines — left side ── -->
+  <g stroke="#00d4ff" stroke-opacity="0.22" stroke-width="1" fill="none">
+    <polyline points="0,60 80,60 80,90 160,90"/>
+    <polyline points="0,100 50,100 50,130 120,130 120,110 200,110"/>
+    <polyline points="0,180 70,180 70,160 150,160"/>
+    <polyline points="0,220 90,220 90,200 180,200 180,215 240,215"/>
+    <circle cx="80"  cy="60"  r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="50"  cy="100" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="120" cy="130" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="70"  cy="180" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="90"  cy="220" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="180" cy="200" r="3" fill="#00ffee" stroke="none" opacity="0.7"/>
+  </g>
+
+  <!-- ── Circuit lines — right side (mirrored) ── -->
+  <g stroke="#00d4ff" stroke-opacity="0.22" stroke-width="1" fill="none">
+    <polyline points="900,60 820,60 820,90 740,90"/>
+    <polyline points="900,100 850,100 850,130 780,130 780,110 700,110"/>
+    <polyline points="900,180 830,180 830,160 750,160"/>
+    <polyline points="900,220 810,220 810,200 720,200 720,215 660,215"/>
+    <circle cx="820" cy="60"  r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="850" cy="100" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="780" cy="130" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="830" cy="180" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="810" cy="220" r="3" fill="#00d4ff" stroke="none" opacity="0.6"/>
+    <circle cx="720" cy="200" r="3" fill="#00ffee" stroke="none" opacity="0.7"/>
+  </g>
+
+  <!-- ── Horizontal scan line ── -->
+  <rect x="0" y="139" width="900" height="1" fill="url(#wgrad1)" opacity="0.6"/>
+  <rect x="0" y="141" width="900" height="1" fill="url(#wgrad2)" opacity="0.4"/>
+
+  <!-- ── Top decorative bar ── -->
+  <rect x="0" y="0" width="900" height="3" fill="url(#wgrad1)"/>
+
+  <!-- ── Bottom wave shapes ── -->
+  <path d="M0,230 C120,210 240,250 360,225 C480,200 600,240 720,218 C810,200 870,225 900,215 L900,280 L0,280 Z"
+        fill="#00d4ff" fill-opacity="0.06"/>
+  <path d="M0,250 C150,235 300,260 450,245 C600,230 750,258 900,242 L900,280 L0,280 Z"
+        fill="#0055ff" fill-opacity="0.08"/>
+
+  <!-- ── Bottom decorative bar ── -->
+  <rect x="0" y="277" width="900" height="3" fill="url(#wgrad1)"/>
+
+  <!-- ── Corner brackets ── -->
+  <g stroke="#00d4ff" stroke-width="2" stroke-opacity="0.7" fill="none">
+    <polyline points="20,20 20,8 32,8"/>
+    <polyline points="868,8 880,8 880,20"/>
+    <polyline points="20,260 20,272 32,272"/>
+    <polyline points="868,272 880,272 880,260"/>
+  </g>
+
+  <!-- ── Small scanning dots (decorative) ── -->
+  <g fill="#00ffee" opacity="0.5">
+    <circle cx="42"  cy="18"  r="2"/>
+    <circle cx="52"  cy="18"  r="2"/>
+    <circle cx="62"  cy="18"  r="2"/>
+    <circle cx="838" cy="18"  r="2"/>
+    <circle cx="848" cy="18"  r="2"/>
+    <circle cx="858" cy="18"  r="2"/>
+  </g>
+
+  <!-- ── NETRECON title — shadow/glow layer ── -->
+  <text x="450" y="118"
+        font-family="'Courier New', Courier, monospace"
+        font-size="78" font-weight="bold"
+        fill="#00d4ff" fill-opacity="0.18"
+        text-anchor="middle" letter-spacing="10">NETRECON</text>
+
+  <!-- ── NETRECON title — main glowing text ── -->
+  <text x="450" y="115"
+        font-family="'Courier New', Courier, monospace"
+        font-size="78" font-weight="bold"
+        fill="url(#titlegrad)"
+        text-anchor="middle" letter-spacing="10"
+        filter="url(#titleglow)">NETRECON</text>
+
+  <!-- ── Divider lines flanking subtitle ── -->
+  <line x1="55"  y1="140" x2="265" y2="140" stroke="url(#wgrad1)" stroke-width="1"/>
+  <line x1="635" y1="140" x2="845" y2="140" stroke="url(#wgrad1)" stroke-width="1"/>
+
+  <!-- ── Diamond ornaments ── -->
+  <polygon points="280,140 287,133 294,140 287,147" fill="#00d4ff" opacity="0.7"/>
+  <polygon points="606,140 613,133 620,140 613,147" fill="#00d4ff" opacity="0.7"/>
+
+  <!-- ── Subtitle text ── -->
+  <text x="450" y="146"
+        font-family="'Courier New', Courier, monospace"
+        font-size="12.5" fill="#7ecfff"
+        text-anchor="middle" letter-spacing="3.5"
+        filter="url(#glow)">ADVANCED NETWORK RECONNAISSANCE &amp; VISUAL REPORTING</text>
+
+  <!-- ── ASCII-style tag line ── -->
+  <text x="450" y="180"
+        font-family="'Courier New', Courier, monospace"
+        font-size="11" fill="#00ffaa"
+        text-anchor="middle" letter-spacing="2" opacity="0.85">⬡  SCAN  ·  ENRICH  ·  SCORE  ·  REPORT  ⬡</text>
+
+  <!-- ── Version tag ── -->
+  <rect x="380" y="195" width="140" height="22" rx="4"
+        fill="#00d4ff" fill-opacity="0.08" stroke="#00d4ff" stroke-opacity="0.3" stroke-width="1"/>
+  <text x="450" y="210"
+        font-family="'Courier New', Courier, monospace"
+        font-size="10" fill="#00d4ff"
+        text-anchor="middle" letter-spacing="2" opacity="0.9">v1.0  ·  KALI LINUX  ·  MIT</text>
+
+  <!-- ── Blinking-style dot indicators (decorative) ── -->
+  <circle cx="450" cy="240" r="2.5" fill="#00ff88" opacity="0.9"/>
+  <circle cx="440" cy="240" r="1.8" fill="#00d4ff" opacity="0.5"/>
+  <circle cx="460" cy="240" r="1.8" fill="#00d4ff" opacity="0.5"/>
+  <circle cx="430" cy="240" r="1.2" fill="#00d4ff" opacity="0.3"/>
+  <circle cx="470" cy="240" r="1.2" fill="#00d4ff" opacity="0.3"/>
 </svg>
 
 <br>
 
-<!-- NetRecon ASCII art — centered via HTML pre tag -->
-<pre align="center">
-███╗   ██╗███████╗████████╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
-████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
-██╔██╗ ██║█████╗     ██║   ██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
-██║╚██╗██║██╔══╝     ██║   ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
-██║ ╚████║███████╗   ██║   ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
-╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝
-</pre>
+<!-- ASCII banner — centered, full-width SVG so it renders perfectly on GitHub -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 105" width="100%">
+  <defs>
+    <linearGradient id="asciibg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#010b18"/>
+      <stop offset="100%" stop-color="#051728"/>
+    </linearGradient>
+    <linearGradient id="asciitext" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#0077cc"/>
+      <stop offset="40%"  stop-color="#00d4ff"/>
+      <stop offset="60%"  stop-color="#00ffee"/>
+      <stop offset="100%" stop-color="#0077cc"/>
+    </linearGradient>
+    <filter id="aglow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="900" height="105" fill="url(#asciibg)"/>
+  <rect x="0" y="0"   width="900" height="1" fill="#00d4ff" opacity="0.15"/>
+  <rect x="0" y="104" width="900" height="1" fill="#00d4ff" opacity="0.15"/>
+  <text font-family="'Courier New', Courier, monospace" font-size="11.2"
+        fill="url(#asciitext)" text-anchor="middle" filter="url(#aglow)" letter-spacing="0.5">
+    <tspan x="450" dy="17">███╗   ██╗███████╗████████╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗</tspan>
+    <tspan x="450" dy="14">████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║</tspan>
+    <tspan x="450" dy="14">██╔██╗ ██║█████╗     ██║   ██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║</tspan>
+    <tspan x="450" dy="14">██║╚██╗██║██╔══╝     ██║   ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║</tspan>
+    <tspan x="450" dy="14">██║ ╚████║███████╗   ██║   ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║</tspan>
+    <tspan x="450" dy="14">╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝</tspan>
+  </text>
+</svg>
 
 <br>
 
@@ -1047,22 +1208,110 @@ Built by **R Shasi Kiran** — BTech Cybersecurity Final Year Capstone Project.
 
 <br>
 
-<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 900 120">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 130" width="100%">
   <defs>
-    <linearGradient id="footerbg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%"   stop-color="#003d52"/>
-      <stop offset="50%"  stop-color="#0a3d62"/>
-      <stop offset="100%" stop-color="#020810"/>
+    <linearGradient id="ftbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#010b18"/>
+      <stop offset="50%"  stop-color="#051a30"/>
+      <stop offset="100%" stop-color="#010b18"/>
     </linearGradient>
-    <linearGradient id="footerwave" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.3"/>
-      <stop offset="50%"  stop-color="#0a3d62" stop-opacity="0.1"/>
-      <stop offset="100%" stop-color="#020810" stop-opacity="0"/>
+    <linearGradient id="ftwave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#00d4ff" stop-opacity="0.45"/>
+      <stop offset="70%"  stop-color="#0066ff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
     </linearGradient>
+    <linearGradient id="ftwave2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#0044cc" stop-opacity="0"/>
+      <stop offset="50%"  stop-color="#00eeff" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#0044cc" stop-opacity="0"/>
+    </linearGradient>
+    <radialGradient id="ftcenter" cx="50%" cy="100%" r="60%">
+      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="ftglow">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <pattern id="ftgrid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#00d4ff" stroke-width="0.12" stroke-opacity="0.14"/>
+    </pattern>
   </defs>
-  <rect width="900" height="120" fill="url(#footerbg)" rx="8"/>
-  <path d="M0,30 C200,70 400,10 600,50 C750,78 850,30 900,45 L900,0 L0,0 Z" fill="url(#footerwave)"/>
-  <path d="M0,55 C150,20 350,75 550,35 C700,5 820,55 900,35 L900,0 L0,0 Z" fill="#00d4ff" fill-opacity="0.07"/>
+
+  <!-- Background -->
+  <rect width="900" height="130" fill="url(#ftbg)"/>
+  <rect width="900" height="130" fill="url(#ftgrid)"/>
+  <rect width="900" height="130" fill="url(#ftcenter)"/>
+
+  <!-- Wave shapes flowing upward from bottom -->
+  <path d="M0,80 C120,55 240,95 360,68 C480,42 600,82 720,58 C810,40 870,72 900,58 L900,0 L0,0 Z"
+        fill="#00d4ff" fill-opacity="0.05"/>
+  <path d="M0,100 C180,75 360,110 540,85 C690,65 800,100 900,80 L900,0 L0,0 Z"
+        fill="#0044aa" fill-opacity="0.07"/>
+
+  <!-- Top border glow line -->
+  <rect x="0" y="0" width="900" height="2.5" fill="url(#ftwave)"/>
+
+  <!-- Corner brackets -->
+  <g stroke="#00d4ff" stroke-width="1.8" stroke-opacity="0.65" fill="none">
+    <polyline points="18,18 18,8 28,8"/>
+    <polyline points="872,8 882,8 882,18"/>
+    <polyline points="18,112 18,122 28,122"/>
+    <polyline points="872,122 882,122 882,112"/>
+  </g>
+
+  <!-- Circuit lines left -->
+  <g stroke="#00d4ff" stroke-opacity="0.18" stroke-width="0.9" fill="none">
+    <polyline points="0,40 60,40 60,55 130,55"/>
+    <polyline points="0,75 80,75 80,62 155,62"/>
+    <circle cx="60"  cy="40" r="2.5" fill="#00d4ff" opacity="0.5"/>
+    <circle cx="80"  cy="75" r="2.5" fill="#00d4ff" opacity="0.5"/>
+    <circle cx="130" cy="55" r="2"   fill="#00ffee" opacity="0.6"/>
+  </g>
+
+  <!-- Circuit lines right -->
+  <g stroke="#00d4ff" stroke-opacity="0.18" stroke-width="0.9" fill="none">
+    <polyline points="900,40 840,40 840,55 770,55"/>
+    <polyline points="900,75 820,75 820,62 745,62"/>
+    <circle cx="840" cy="40" r="2.5" fill="#00d4ff" opacity="0.5"/>
+    <circle cx="820" cy="75" r="2.5" fill="#00d4ff" opacity="0.5"/>
+    <circle cx="770" cy="55" r="2"   fill="#00ffee" opacity="0.6"/>
+  </g>
+
+  <!-- Divider line with diamonds -->
+  <line x1="80" y1="65" x2="380" y2="65" stroke="url(#ftwave)" stroke-width="1"/>
+  <line x1="520" y1="65" x2="820" y2="65" stroke="url(#ftwave)" stroke-width="1"/>
+  <polygon points="450,58 458,65 450,72 442,65" fill="#00d4ff" opacity="0.8" filter="url(#ftglow)"/>
+
+  <!-- NetRecon label -->
+  <text x="450" y="62"
+        font-family="'Courier New', Courier, monospace"
+        font-size="10" fill="#00d4ff"
+        text-anchor="middle" letter-spacing="4" opacity="0.9"
+        filter="url(#ftglow)">N E T R E C O N</text>
+
+  <!-- Tagline -->
+  <text x="450" y="88"
+        font-family="'Courier New', Courier, monospace"
+        font-size="9.5" fill="#7ecfff"
+        text-anchor="middle" letter-spacing="2" opacity="0.7">AUTHORIZED USE ONLY  ·  KALI LINUX  ·  MIT LICENSE</text>
+
+  <!-- Scan dots -->
+  <g fill="#00ffaa" opacity="0.7" filter="url(#ftglow)">
+    <circle cx="445" cy="102" r="2"/>
+    <circle cx="450" cy="102" r="2.5"/>
+    <circle cx="455" cy="102" r="2"/>
+  </g>
+  <g fill="#00d4ff" opacity="0.35">
+    <circle cx="435" cy="102" r="1.5"/>
+    <circle cx="465" cy="102" r="1.5"/>
+    <circle cx="425" cy="102" r="1"/>
+    <circle cx="475" cy="102" r="1"/>
+  </g>
+
+  <!-- Bottom border -->
+  <rect x="0" y="127.5" width="900" height="2.5" fill="url(#ftwave2)"/>
 </svg>
 
 </div>

@@ -3,30 +3,53 @@
 
 
 
-
-
-
-
-
-
-
-
 <div align="center">
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:020810,30:0a1628,70:0a3d62,100:00d4ff&height=220&section=header&text=NetRecon&fontSize=90&fontColor=00d4ff&fontAlignY=40&desc=Advanced%20Network%20Reconnaissance%20%26%20Visual%20Reporting%20Tool&descSize=16&descAlignY=62&descColor=7ab4ff&animation=fadeIn&fontAlignX=50"/>
+<!-- Header banner — pure SVG, no external service, always loads -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 900 200">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#020810"/>
+      <stop offset="35%"  stop-color="#0a1628"/>
+      <stop offset="75%"  stop-color="#0a3d62"/>
+      <stop offset="100%" stop-color="#003d52"/>
+    </linearGradient>
+    <linearGradient id="wave1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#0a3d62" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#0a3d62" stop-opacity="0"/>
+      <stop offset="100%" stop-color="#00d4ff" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="900" height="200" fill="url(#bg)" rx="8"/>
+  <!-- Wave shapes -->
+  <path d="M0,120 C150,80 300,160 450,110 C600,60 750,140 900,100 L900,200 L0,200 Z" fill="url(#wave1)"/>
+  <path d="M0,150 C200,110 400,180 600,130 C750,95 850,155 900,130 L900,200 L0,200 Z" fill="url(#wave2)"/>
+  <!-- Title -->
+  <text x="450" y="95" font-family="'Courier New', monospace" font-size="72" font-weight="bold"
+        fill="#00d4ff" text-anchor="middle" letter-spacing="8">NetRecon</text>
+  <!-- Subtitle -->
+  <text x="450" y="138" font-family="'Courier New', monospace" font-size="14"
+        fill="#7ab4ff" text-anchor="middle" letter-spacing="2">Advanced Network Reconnaissance &amp; Visual Reporting Tool</text>
+  <!-- Decorative lines -->
+  <line x1="120" y1="115" x2="310" y2="115" stroke="#00d4ff" stroke-opacity="0.4" stroke-width="1"/>
+  <line x1="590" y1="115" x2="780" y2="115" stroke="#00d4ff" stroke-opacity="0.4" stroke-width="1"/>
+</svg>
 
-</div>
+<br>
 
-<div align="center">
-
-```
- ███╗   ██╗███████╗████████╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
- ████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
- ██╔██╗ ██║█████╗     ██║   ██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
- ██║╚██╗██║██╔══╝     ██║   ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
- ██║ ╚████║███████╗   ██║   ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
- ╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝
-```
+<!-- NetRecon ASCII art — centered via HTML pre tag -->
+<pre align="center">
+███╗   ██╗███████╗████████╗██████╗ ███████╗ ██████╗ ██████╗ ███╗   ██╗
+████╗  ██║██╔════╝╚══██╔══╝██╔══██╗██╔════╝██╔════╝██╔═══██╗████╗  ██║
+██╔██╗ ██║█████╗     ██║   ██████╔╝█████╗  ██║     ██║   ██║██╔██╗ ██║
+██║╚██╗██║██╔══╝     ██║   ██╔══██╗██╔══╝  ██║     ██║   ██║██║╚██╗██║
+██║ ╚████║███████╗   ██║   ██║  ██║███████╗╚██████╗╚██████╔╝██║ ╚████║
+╚═╝  ╚═══╝╚══════╝   ╚═╝   ╚═╝  ╚═╝╚══════╝ ╚═════╝ ╚═════╝ ╚═╝  ╚═══╝
+</pre>
 
 <br>
 
@@ -1024,6 +1047,22 @@ Built by **R Shasi Kiran** — BTech Cybersecurity Final Year Capstone Project.
 
 <br>
 
-<img width="100%" src="https://capsule-render.vercel.app/api?type=waving&color=0:00d4ff,40:0a3d62,100:020810&height=140&section=footer"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="100%" viewBox="0 0 900 120">
+  <defs>
+    <linearGradient id="footerbg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#003d52"/>
+      <stop offset="50%"  stop-color="#0a3d62"/>
+      <stop offset="100%" stop-color="#020810"/>
+    </linearGradient>
+    <linearGradient id="footerwave" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#00d4ff" stop-opacity="0.3"/>
+      <stop offset="50%"  stop-color="#0a3d62" stop-opacity="0.1"/>
+      <stop offset="100%" stop-color="#020810" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="120" fill="url(#footerbg)" rx="8"/>
+  <path d="M0,30 C200,70 400,10 600,50 C750,78 850,30 900,45 L900,0 L0,0 Z" fill="url(#footerwave)"/>
+  <path d="M0,55 C150,20 350,75 550,35 C700,5 820,55 900,35 L900,0 L0,0 Z" fill="#00d4ff" fill-opacity="0.07"/>
+</svg>
 
 </div>

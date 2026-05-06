@@ -61,7 +61,7 @@ Every time you start a pentest, CTF, or network audit — you have to manually r
 │  $ manually search CVEs...     │  [+] Risk Score: 95/100 — CRITICAL     │
 │  $ write your own report...    │  [+] Report ready → open in browser    │
 │                                │                                        │
-│  ⏱ 30+ minutes of manual work  │  ⏱ One command. Done.                  │
+│  ⏱ 30+ minutes of manual work  │  ⏱ One command. Done.                 │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
